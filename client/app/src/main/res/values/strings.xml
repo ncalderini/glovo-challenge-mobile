@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">GlovoTestApp</string>
+
+    <!-- Permissions -->
+    <string name="location_rationale">Access to the location service is required to show your current location on the map.</string>
+
+    <!--Map Activity-->
+    <string name="title_activity_maps">Map</string>
+    <string name="name_title">Name</string>
+    <string name="currency_title">Currency</string>
+    <string name="time_zone_title">Time Zone</string>
+
+    <!--Pick Location Activity-->
+    <string name="title_activity_select_location">Pick Location</string>
+</resources>
