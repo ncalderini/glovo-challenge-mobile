@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -64,6 +66,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
         })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.maps_activity_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when(item?.itemId) {
+            R.id.select_location_menu_item -> {
+                startSelectLocation()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     /**
      * Add city markers to google map.
      * Markers are stored in a list for further manipulation
@@ -113,14 +130,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
                 if (model.isInsideWorkingArea(latLngLocation)) {
                     centerMapOnUserLocation(latLngLocation)
                 } else {
-                    val intent = LocationSelectActivity.getActivityIntent(this, model.getCountries().value!!)
-                    startActivityForResult(intent, REQUEST_CODE_CITY_PICKER)
+                    startSelectLocation()
                 }
             }
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.location_rationale),
                 REQUEST_CODE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun startSelectLocation() {
+        val intent = LocationSelectActivity.getActivityIntent(this, model.getCountries().value!!)
+        startActivityForResult(intent, REQUEST_CODE_CITY_PICKER)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -136,9 +157,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size)
-
-        val intent = LocationSelectActivity.getActivityIntent(this, model.getCountries().value!!)
-        startActivityForResult(intent, REQUEST_CODE_CITY_PICKER)
+        startSelectLocation()
     }
 
     override fun onCameraMove() {

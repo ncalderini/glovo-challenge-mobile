@@ -12,4 +12,5 @@
 
     <!--Pick Location Activity-->
     <string name="title_activity_select_location">Pick Location</string>
+    <string name="menu_select_location_title">Select Location</string>
 </resources>
