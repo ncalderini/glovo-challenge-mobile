@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -28,12 +29,15 @@ import ncalderini.glovotestapp.model.Country
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
-const val REQUEST_CODE_LOCATION = 123
-const val REQUEST_CODE_CITY_PICKER = 10
-const val MAX_ZOOM_LEVEL = 10f
-
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCameraMoveListener,
     GoogleMap.OnMarkerClickListener, EasyPermissions.PermissionCallbacks {
+
+    companion object {
+        private const val TAG = "MapsActivity"
+        private const val REQUEST_CODE_LOCATION = 123
+        private const val REQUEST_CODE_CITY_PICKER = 10
+        private const val MAX_ZOOM_LEVEL = 10f
+    }
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -60,6 +64,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
         })
     }
 
+    /**
+     * Add city markers to google map.
+     * Markers are stored in a list for further manipulation
+     */
     private fun addMarkersToMap() {
         model.getCityMarkers().observe(this, Observer<List<CityMarker>> { cityMarkerList ->
             cityMarkerList.forEach { cityMarker ->
@@ -123,10 +131,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-
+        Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size)
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size)
+
         val intent = CountrySelectActivity.getActivityIntent(this, model.getCountries().value!!)
         startActivityForResult(intent, REQUEST_CODE_CITY_PICKER)
     }
@@ -142,6 +152,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
         return true
     }
 
+    /**
+     * Centers google map view on the city working area bounds.
+     * @param city City to be centered
+     */
     private fun centerMapOnCity(city: City) {
         val position = city.workingAreaBounds?.areaBounds!!
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(position, 10))
@@ -154,6 +168,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
         })
     }
 
+    /**
+     * Centers google map view on the user's current location.
+     * @param userLocation User's current location
+     */
     private fun centerMapOnUserLocation(userLocation: LatLng) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15.0f))
         progress_bar.visibility = View.VISIBLE
@@ -165,8 +183,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
         })
     }
 
+    /**
+     * Show or Hide City Markers on map.
+     * @param show `true` to show city markers, `false` otherwise.
+     */
     private fun showCityMarkers(show: Boolean) {
        pinnedMarkers.forEach { marker -> marker.isVisible = show }
+    }
+
+    /**
+     * Draws the City's Working Area on map
+     */
+    private fun drawCityWorkingAreaBoundsOnMap(city: City) {
+        city.workingAreaBounds?.workingAreaLatLngList?.forEach { latLngList ->
+            mMap.addPolygon(PolygonOptions()
+                .addAll(latLngList)
+                .strokeWidth(0f)
+                .fillColor(ContextCompat.getColor(this, R.color.colorPrimaryTransparent))
+            )
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -174,16 +209,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CITY_PICKER) {
             val selectedCity: City = data?.getParcelableExtra(CountrySelectActivity.ARG_SELECTED_CITY) as City
             centerMapOnCity(selectedCity)
-        }
-    }
-
-    private fun drawCityWorkingAreaBoundsOnMap(city: City) {
-        city.workingAreaBounds?.workingAreaLatLngList?.forEach { latLngList ->
-            mMap.addPolygon(PolygonOptions()
-                    .addAll(latLngList)
-                    .strokeWidth(0f)
-                    .fillColor(ContextCompat.getColor(this, R.color.colorPrimaryTransparent))
-            )
         }
     }
 }

@@ -9,7 +9,7 @@ data class Country(val code: String,
                    var cities: List<City> = emptyList()) : Parcelable {
 
     /**
-     * {@return} Returns an Emoji representing the flag of this Country
+     * @return Returns an Emoji, in Unicode format, representing the flag of this Country
      */
     fun flag() : String {
         val flagOffset = 0x1F1E6

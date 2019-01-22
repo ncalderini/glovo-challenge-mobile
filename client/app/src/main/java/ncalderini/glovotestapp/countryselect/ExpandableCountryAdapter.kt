@@ -61,7 +61,7 @@ class ExpandableCountryAdapter(private val countries: List<Country>) : BaseExpan
 
         val cityTextView = convertView!!.findViewById<TextView>(R.id.city_tv)
         val city = getChild(groupPosition, childPosition)
-        cityTextView.text =  city.name
+        cityTextView.text = city.name
 
         return convertView
     }

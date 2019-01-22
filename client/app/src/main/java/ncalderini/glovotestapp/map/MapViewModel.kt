@@ -50,6 +50,9 @@ class MapViewModel : ViewModel() {
         }
     }
 
+    /**
+     * @return The city that encloses this position
+     */
     fun getCityDetailsFromPosition(position: LatLng) : LiveData<City> {
         cityDetails = MutableLiveData()
         val currentCity = getCurrentCityFromPosition(position)
@@ -71,6 +74,9 @@ class MapViewModel : ViewModel() {
         }
     }
 
+    /**
+     * @return A list of markers with the position of each city
+     */
     fun getCityMarkers() : LiveData<List<CityMarker>> {
         if (!::cityMarkers.isInitialized) {
             cityMarkers = MutableLiveData()
@@ -87,6 +93,9 @@ class MapViewModel : ViewModel() {
         return cityMarkers
     }
 
+    /**
+     * Appends City data to each country
+     */
     private fun mergeResults(countries: List<Country>?, cities: List<City>?) : List<Country> {
         val fullCountryList = ArrayList<Country>()
         countries?.forEach { country ->
@@ -113,6 +122,10 @@ class MapViewModel : ViewModel() {
         }
     }
 
+    /**
+     * @param position Position to be queried.
+     * @return `true` if `position` is inside of a Working Area. `false` otherwise
+     */
     fun isInsideWorkingArea(position: LatLng) : Boolean {
         cities.forEach { city ->
             city.workingAreaBounds?.let {
@@ -124,6 +137,10 @@ class MapViewModel : ViewModel() {
         return false
     }
 
+    /**
+     * @param position Position to be queried
+     * @return `city` if this position is inside a City's Working area bounds. `null` otherwise
+     */
     private fun getCurrentCityFromPosition(position: LatLng) : City? {
         cities.forEach { city ->
             city.workingAreaBounds?.let {

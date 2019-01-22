@@ -20,9 +20,14 @@ class WorkingArea(val workingAreaLatLngList: List<List<LatLng>>) : Parcelable {
                 latLngBuilder.include(latLng)
             }
         }
+        workingAreaLatLngList.isEmpty()
         areaBounds = latLngBuilder.build()
     }
 
+    /**
+     * @param latLng Position to be queried.
+     * @return `true` if the position is inside the Working Area bounds. `false` otherwise
+     */
     fun positionIsInsideWorkingArea(latLng: LatLng) : Boolean {
         workingAreaLatLngList.forEach { locationList ->
             if (PolyUtil.containsLocation(latLng, locationList, true)) {

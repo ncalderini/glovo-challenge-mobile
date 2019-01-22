@@ -15,13 +15,18 @@ class GlovoTestAppApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initEmojiCompat()
+    }
 
+    private fun initEmojiCompat() {
         // Use a downloadable font for EmojiCompat
         val fontRequest = FontRequest(
             "com.google.android.gms.fonts",
             "com.google.android.gms",
             "Noto Color Emoji Compat",
-            R.array.com_google_android_gms_fonts_certs)
+            R.array.com_google_android_gms_fonts_certs
+        )
+
         val config = FontRequestEmojiCompatConfig(this, fontRequest)
             .setReplaceAll(true)
             .registerInitCallback(object : EmojiCompat.InitCallback() {
@@ -33,6 +38,7 @@ class GlovoTestAppApplication : Application() {
                     Log.e(TAG, "EmojiCompat initialization failed", throwable)
                 }
             })
+
         EmojiCompat.init(config)
     }
 }
