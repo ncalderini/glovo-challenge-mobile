@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.PolyUtil
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,6 +19,8 @@ import ncalderini.glovotestapp.networking.ApiFactory
 class MapViewModel : ViewModel() {
 
     private val glovoService = ApiFactory.glovoApi
+    //Have to do this to perform Unit tests...
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 
     private lateinit var countries: MutableLiveData<List<Country>>
     private lateinit var cityMarkers: MutableLiveData<List<CityMarker>>
@@ -33,7 +36,7 @@ class MapViewModel : ViewModel() {
     }
 
     private fun fetchCountries() {
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(dispatcher) {
             val countryRequest = glovoService.getCountries()
             val citiesRequest = glovoService.getCities()
             try {
@@ -61,7 +64,7 @@ class MapViewModel : ViewModel() {
     }
 
     private fun fetchCityDetails(cityCode: String) {
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(dispatcher) {
             val cityDetailRequest = glovoService.getCityDetails(cityCode)
             try {
                 val cityDetailsResponse = cityDetailRequest.await()

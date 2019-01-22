@@ -1,4 +1,4 @@
-package ncalderini.glovotestapp.countryselect
+package ncalderini.glovotestapp.locationselect
 
 import android.app.Activity
 import android.content.Context
@@ -6,18 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_country_select.*
+import kotlinx.android.synthetic.main.activity_location_select.*
 import ncalderini.glovotestapp.R
 import ncalderini.glovotestapp.model.Country
 
-class CountrySelectActivity : AppCompatActivity() {
+class LocationSelectActivity : AppCompatActivity() {
 
     companion object {
         private const val ARG_COUNTRIES = "ARG_COUNTRIES"
         const val ARG_SELECTED_CITY = "ARG_SELECTED_CITY"
 
         fun getActivityIntent(context: Context, countries: List<Country>) : Intent {
-            val citySelectorIntent = Intent(context, CountrySelectActivity::class.java)
+            val citySelectorIntent = Intent(context, LocationSelectActivity::class.java)
             citySelectorIntent.putParcelableArrayListExtra(ARG_COUNTRIES, countries as ArrayList)
             return citySelectorIntent
         }
@@ -27,7 +27,7 @@ class CountrySelectActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_country_select)
+        setContentView(R.layout.activity_location_select)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val countries: List<Country> = intent.extras?.getParcelableArrayList(ARG_COUNTRIES)!!

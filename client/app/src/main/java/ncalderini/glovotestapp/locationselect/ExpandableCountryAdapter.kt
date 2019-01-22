@@ -1,4 +1,4 @@
-package ncalderini.glovotestapp.countryselect
+package ncalderini.glovotestapp.locationselect
 
 import android.content.Context
 import android.view.LayoutInflater

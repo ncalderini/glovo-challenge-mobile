@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolygonOptions
 import kotlinx.android.synthetic.main.activity_maps.*
 import ncalderini.glovotestapp.R
-import ncalderini.glovotestapp.countryselect.CountrySelectActivity
+import ncalderini.glovotestapp.locationselect.LocationSelectActivity
 import ncalderini.glovotestapp.model.City
 import ncalderini.glovotestapp.model.CityMarker
 import ncalderini.glovotestapp.model.Country
@@ -113,7 +113,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
                 if (model.isInsideWorkingArea(latLngLocation)) {
                     centerMapOnUserLocation(latLngLocation)
                 } else {
-                    val intent = CountrySelectActivity.getActivityIntent(this, model.getCountries().value!!)
+                    val intent = LocationSelectActivity.getActivityIntent(this, model.getCountries().value!!)
                     startActivityForResult(intent, REQUEST_CODE_CITY_PICKER)
                 }
             }
@@ -137,7 +137,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
         Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size)
 
-        val intent = CountrySelectActivity.getActivityIntent(this, model.getCountries().value!!)
+        val intent = LocationSelectActivity.getActivityIntent(this, model.getCountries().value!!)
         startActivityForResult(intent, REQUEST_CODE_CITY_PICKER)
     }
 
@@ -207,7 +207,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnCamera
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CITY_PICKER) {
-            val selectedCity: City = data?.getParcelableExtra(CountrySelectActivity.ARG_SELECTED_CITY) as City
+            val selectedCity: City = data?.getParcelableExtra(LocationSelectActivity.ARG_SELECTED_CITY) as City
             centerMapOnCity(selectedCity)
         }
     }
